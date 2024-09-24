@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор отпускных</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        input {
+            width: 300px
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            cursor: pointer;
+            background-color: #FF8000;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Калькулятор отпускных</h2>
+
+<div>
+    <label for="salary">Средняя месячная зарплата (₽): </label>
+    <input type="number" id="salary" placeholder="Введите Вашу среднюю зарплату">
+</div>
+<div>
+    <label for="days">Количество дней отпуска: </label>
+    <input type="number" id="days" placeholder="Введите кол-во дней отпуска">
+</div>
+<button onclick="calculateVacationPay()">Calculate</button>
+
+<h3>Отпускные составляют: <span id="result">-</span></h3>
+
+<script>
+    async function calculateVacationPay() {
+        const salary = document.getElementById('salary').value;
+        const days = document.getElementById('days').value;
+
+        if (!salary || !days) {
+            alert('Неверно введено количество отпускных или средняя зарплата!');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/calculate?averageSalary=${salary}&vacationDays=${days}`);
+            if (!response.ok) {
+                throw new Error('Ошибка расчета количества отпускных.');
+            }
+
+            const result = await response.json();
+            document.getElementById('result').innerText = result.toFixed(2) + ' ₽';
+        } catch (error) {
+            document.getElementById('result').innerText = 'Ошибка: ' + error.message;
+        }
+    }
+</script>
+
+</body>
+</html>
